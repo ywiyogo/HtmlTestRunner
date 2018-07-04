@@ -1,3 +1,4 @@
+# encoding: utf-8
 from __future__ import print_function
 import os
 import sys
@@ -124,7 +125,7 @@ class _HtmlTestResult(_TextTestResult):
         """ Return the test descriotion if not have test name. """
         doc_first_line = test.shortDescription()
         if self.descriptions and doc_first_line:
-            return doc_first_line
+            return doc_first_line.replace('\n', '<br/>')
         else:
             return str(test)
 
@@ -281,7 +282,7 @@ class _HtmlTestResult(_TextTestResult):
         error_type = ""
         if testCase.outcome != testCase.SKIP and testCase.outcome != testCase.SUCCESS:
             error_type = testCase.err[0].__name__
-            error_message = testCase.err[1]
+            error_message = testCase.test_exception_info.replace('\n', '<br/>')
         else:
             error_message = testCase.err
 
@@ -328,7 +329,7 @@ class _HtmlTestResult(_TextTestResult):
     def generate_reports(self, testRunner):
         """ Generate report for all given runned test object. """
         all_results = self._get_info_by_testcase()
-
+        
         for testcase_class_name, all_tests in all_results.items():
 
             if testRunner.outsuffix:
@@ -348,7 +349,7 @@ class _HtmlTestResult(_TextTestResult):
             os.makedirs(dir_to)
         path_file = os.path.join(dir_to, report_name)
         with open(path_file, 'w') as report_file:
-            report_file.write(report)
+            report_file.write(report.encode("UTF-8"))
 
     def _exc_info_to_string(self, err, test):
         """ Converts a sys.exc_info()-style tuple of values into a string."""
